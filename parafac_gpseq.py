@@ -11,7 +11,7 @@ import sys
 
 tl.set_backend('numpy')
 
-path = '/home/garner1/Work/dataset/gpseq/10000'
+path = '/home/garner1/Work/dataset/gpseq/10000G'
 files = os.listdir(path) # dir list in path with different configurations
 
 samples = int(sys.argv[1])
@@ -30,15 +30,14 @@ for config in config_sample:
             mat = scipy.sparse.load_npz(filename).astype(np.float32).todense()
             # sub_threshold_indices = mat < 0.5
             # mat[sub_threshold_indices] = 0
-            u,s,vh = tl.partial_svd(mat, n_eigenvecs=3) # 3 should be enough because the data is x,y,z times beads
-            T[count,:,:] = np.dot(u, np.dot(np.diag(s), vh))
+            T[count,:,:] = mat
             del mat
         continue
     else:
         continue
     count += 1
 
-factors = non_negative_parafac(T, rank=rank, n_iter_max=10000, verbose=1, init='svd', tol=1e-10)
+factors = non_negative_parafac(T, rank=rank, verbose=1, init='random', tol=1e-4)
 # print(factors[0])
 # print([f.shape for f in factors[1]])
 # print([tl.norm(factors[1][0][:,ind],2)*tl.norm(factors[1][1][:,ind],2)*tl.norm(factors[1][2][:,ind],2) for ind in range(rank)])
