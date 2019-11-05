@@ -1,0 +1,6 @@
+# USE UMAP TO MAP 3D STRUCTURES TO DENSE WEIGHTED UNDIRECTED GRAPHS
+parallel "/usr/local/share/anaconda3/bin/python3.7 graph_generator.py {}" ::: ~/Work/dataset/gpseq/10000*/cf_*/coords.csv
+
+# REPRESENT EACH ADJACENCY MATRIX WITH THE FIRST 100 EIGENVECTORS/VALUES TO REDUCE SPACE AND TIME RESOURCES (~150 GB THIS WAY, OTHERWISE 2TB FOR FULL STORAGE OF INFO).
+# SUBSEQUENT TENSOR DECOMPOSITION DOES NOT WORK WITHOUT THIS REDUCTION. ALS ALGORITHM DOES NOT CONVERGE PRACTICALLY (TOO SLOW)
+parallel "/usr/local/share/anaconda3/bin/python3.7 tsvd_graph.py {}" ::: ~/Work/dataset/gpseq/10000*/cf_*/coords.csv_sparse_graph.npz
