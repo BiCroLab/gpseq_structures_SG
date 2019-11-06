@@ -12,7 +12,7 @@ import pickle as pkl
 
 tl.set_backend('numpy')
 
-path = '/media/garner1/hdd1/gpseq/10000'
+path = '/media/garner1/hdd1/gpseq/10000G'
 files = os.listdir(path) # dir list in path with different 3D and graph SingleCell representations
 
 samples = int(sys.argv[1]) #number of structure to consider
@@ -47,14 +47,14 @@ del T
 save = True
 load = False
 
-fileName = path + '/info' + '/nnparafac' + '_rank' + str(rank) + '_sample' + str(ind) + '_size' + str(samples) + '.pkl'
+fileName = '/media/garner1/hdd1/gpseq' + '/info_10000G' + '/nnparafac' + '_rank' + str(rank) + '_sample' + str(ind) + '_size' + str(samples) + '.pkl'
 fileObject = open(fileName, 'wb')
 
 if save:
     pkl.dump(factors, fileObject)
     fileObject.close()
 
-fileName = path + '/info' + '/cf-sampled' + '_rank' + str(rank) + '_sample' + str(ind) + '_size' + str(samples) + '.pkl'
+fileName = '/media/garner1/hdd1/gpseq' + '/info_10000G' + '/cf-sampled' + '_rank' + str(rank) + '_sample' + str(ind) + '_size' + str(samples) + '.pkl'
 fileObject = open(fileName, 'wb')
 if save:
     pkl.dump(config_sample, fileObject)
