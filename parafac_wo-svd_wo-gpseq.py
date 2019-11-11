@@ -16,45 +16,37 @@ path = '/media/garner1/hdd1/gpseq/10000'
 files = os.listdir(path) # dir list in path with different 3D and graph SingleCell representations
 
 samples = int(sys.argv[1]) #number of structure to consider
-rank = int(sys.argv[2])  # 2d svd rank
-comm = int(sys.argv[3])  # number of communities requested
-ind = int(sys.argv[4])   # label the sampling of #samples over the 10000 population of SC (you need many of these)
+comm = int(sys.argv[2])  # number of communities requested
+ind = int(sys.argv[3])   # label the sampling of #samples over the 10000 population of SC (you need many of these)
 
 config_sample = random.sample(files, k=samples) # sample k times without replacement from configurations
 T = np.zeros(shape = (samples, 3043, 3043), dtype = np.float32 )
 graph_idx = 0
 
 for config in config_sample:
-    filename = os.path.join(path, config)+'/coords.csv_tsvd.npz'
+    filename = os.path.join(path, config)+'/coords.csv_sparse_graph.npz'
     print(filename)
     if os.path.isfile(filename): 
-        svd = np.load(filename)
-        u = svd['u'][:,:rank]
-        s = svd['s'][:rank]
-        vt = svd['vt'][:rank,:]
-        T[graph_idx,:,:] = np.dot(np.dot(u,np.diag(s)),vt)
-        del svd
+        T[graph_idx,:,:] = scipy.sparse.load_npz(filename).todense()
         continue
     else:
         continue
     graph_idx += 1
 
-factors = non_negative_parafac(T, rank=comm, n_iter_max=100, verbose=1, init='random', tol=1e-8)
-# print('The norm-2 difference between original and approximation is: '+str(tl.norm(tl.kruskal_to_tensor(factors)-T,2)))
-# print('The relative norm-2 difference between original and approximation is: '+str(tl.norm(tl.kruskal_to_tensor(factors)-T,2)/tl.norm(T,2)))
+factors = non_negative_parafac(T, rank=comm, n_iter_max=1000, verbose=1, init='random', tol=1e-8)
 del T
 
 save = True
 load = False
 
-fileName = '/media/garner1/hdd1/gpseq' + '/info_10000' + '/nnparafac' + '_rank' + str(rank) + '_sample' + str(ind) + '_size' + str(samples) + '.pkl'
+fileName = '/media/garner1/hdd1/gpseq' + '/info_10000' + '/nnparafac_no-svd' + '_comm' + str(comm) + '_sample' + str(ind) + '_size' + str(samples) + '.pkl'
 fileObject = open(fileName, 'wb')
 
 if save:
     pkl.dump(factors, fileObject)
     fileObject.close()
 
-fileName = '/media/garner1/hdd1/gpseq' + '/info_10000' + '/cf-sampled' + '_rank' + str(rank) + '_sample' + str(ind) + '_size' + str(samples) + '.pkl'
+fileName = '/media/garner1/hdd1/gpseq' + '/info_10000' + '/cf-sampled_no-svd' + '_comm' + str(comm) + '_sample' + str(ind) + '_size' + str(samples) + '.pkl'
 fileObject = open(fileName, 'wb')
 if save:
     pkl.dump(config_sample, fileObject)
