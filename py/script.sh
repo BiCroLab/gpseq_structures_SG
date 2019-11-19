@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# parallel "/usr/local/share/anaconda3/bin/python3.7 interchr_graph.py {}" ::: /media/garner1/hdd1/gpseq/10000/cf_*/coords.csv_sparse_graph.npz &&
+#     parallel "/usr/local/share/anaconda3/bin/python3.7 tsvd_graph.py {}" ::: /media/garner1/hdd1/gpseq/10000/cf_*/coords.csv_sparse_graph.npz_interchr.npz &&
+#     /usr/local/share/anaconda3/bin/python3.7 parafac_WOintraChromContact.py 100 25 30 2 > WOintraChr.s100.r25.c30.id2.output
+
+/usr/local/share/anaconda3/bin/python3.7 parafac_WOintraChromContact.gpseq.py 100 25 30 3 > WOintraChr.s100.r25.c30.id3.gpseq.output
+/usr/local/share/anaconda3/bin/python3.7 parafac_WOintraChromContact.hic.py 100 25 30 3 > WOintraChr.s100.r25.c30.id3.hic.output
